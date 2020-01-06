@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pqin3.0", "pqin3.0\pqin3.0.csproj", "{4B27FA5B-52B9-4651-875A-92E9CBF616C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ORMF", "..\ORMF\ORMF\ORMF.csproj", "{87D6165E-23EF-4DE6-AE43-E647F05ACA90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ORMF", "ORMF\ORMF.csproj", "{87D6165E-23EF-4DE6-AE43-E647F05ACA90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

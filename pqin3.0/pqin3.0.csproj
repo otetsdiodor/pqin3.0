@@ -262,7 +262,7 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ORMF\ORMF\ORMF.csproj">
+    <ProjectReference Include="..\ORMF\ORMF.csproj">
       <Project>{87d6165e-23ef-4de6-ae43-e647f05aca90}</Project>
       <Name>ORMF</Name>
     </ProjectReference>
