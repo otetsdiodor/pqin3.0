@@ -16,7 +16,6 @@ namespace pqin3._0.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        //private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private static readonly ILog Logger = LogManager.GetLogger(System.Environment.MachineName);
         public AccountController()
@@ -26,20 +25,7 @@ namespace pqin3._0.Controllers
         public AccountController(ApplicationUserManager userManager)
         {
             UserManager = userManager;
-            //SignInManager = signInManager;
         }
-
-        //public ApplicationSignInManager SignInManager
-        //{
-        //    get
-        //    {
-        //        return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-        //    }
-        //    private set 
-        //    { 
-        //        _signInManager = value; 
-        //    }
-        //}
 
         public ApplicationUserManager UserManager
         {
@@ -128,13 +114,11 @@ namespace pqin3._0.Controllers
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false)
                         return RedirectToAction("Index", "Home");
                     }
                     AddErrors(result);
                 }
 
-                // Появление этого сообщения означает наличие ошибки; повторное отображение формы
                 return View(model);
             }
             catch (Exception e)
@@ -182,7 +166,6 @@ namespace pqin3._0.Controllers
         }
 
         #region Вспомогательные приложения
-        // Используется для защиты от XSRF-атак при добавлении внешних имен входа
         private const string XsrfKey = "XsrfId";
 
         private IAuthenticationManager AuthenticationManager

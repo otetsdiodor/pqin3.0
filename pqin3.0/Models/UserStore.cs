@@ -10,14 +10,10 @@ namespace pqin3._0.Models
 {
     public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserLockoutStore<User, string>, IUserTwoFactorStore<User, string>
     {
-        //NastedContext _context;
         IAuthRepo<User> _context;
         public UserStore()
         { }
-        //public UserStore(NastedContext context)
-        //{
-        //    _context = context;
-        //}
+
         public UserStore(IAuthRepo<User> context)
         {
             _context = context;
@@ -68,7 +64,7 @@ namespace pqin3._0.Models
         public Task<string> GetPasswordHashAsync(User user)
         {
             var us = (User)_context.GetById(user.Id);
-            return Task.Factory.StartNew(() => us.PasswordHash/*.GetHashCode().ToString()*/);
+            return Task.Factory.StartNew(() => us.PasswordHash);
         }
 
         public Task<bool> GetTwoFactorEnabledAsync(User user)
