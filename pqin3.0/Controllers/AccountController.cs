@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using log4net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -17,7 +18,7 @@ namespace pqin3._0.Controllers
     {
         //private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private static readonly ILog Logger = LogManager.GetLogger(System.Environment.MachineName);
         public AccountController()
         {
         }
@@ -68,29 +69,38 @@ namespace pqin3._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            Logger.Info($"{model.UserName} signedIn to system -_-");
+            try
             {
-                var user = await UserManager.FindAsync(model.UserName, model.Password);
-                if (user == null)
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("", "Неверный логин или пароль.");
-                }
-                else
-                {
-                    ClaimsIdentity claim = await UserManager.CreateIdentityAsync(user,
-                                            DefaultAuthenticationTypes.ApplicationCookie);
-                    AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties
+                    var user = await UserManager.FindAsync(model.UserName, model.Password);
+                    if (user == null)
                     {
-                        IsPersistent = true
-                    }, claim);
-                    if (String.IsNullOrEmpty(returnUrl))
-                        return RedirectToAction("Index", "Home");
-                    return Redirect(returnUrl);
+                        ModelState.AddModelError("", "Неверный логин или пароль.");
+                    }
+                    else
+                    {
+                        ClaimsIdentity claim = await UserManager.CreateIdentityAsync(user,
+                                                DefaultAuthenticationTypes.ApplicationCookie);
+                        AuthenticationManager.SignOut();
+                        AuthenticationManager.SignIn(new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        }, claim);
+                        if (String.IsNullOrEmpty(returnUrl))
+                            return RedirectToAction("Index", "Home");
+                        return Redirect(returnUrl);
+                    }
                 }
+                ViewBag.returnUrl = returnUrl;
+                return View(model);
             }
-            ViewBag.returnUrl = returnUrl;
-            return View(model);
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                return View();
+            }
         }
 
         
@@ -110,23 +120,30 @@ namespace pqin3._0.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = new User { Id = Guid.NewGuid().ToString(), UserName = model.UserName};
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false)
-                    return RedirectToAction("Index", "Home");
+                    var user = new User { Id = Guid.NewGuid().ToString(), UserName = model.UserName };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false)
+                        return RedirectToAction("Index", "Home");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+
+                // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+                return View(model);
             }
-
-            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
-            return View(model);
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                return View();
+            }
+            
         }
-
-       
 
         //
         // POST: /Account/LogOff
@@ -134,8 +151,18 @@ namespace pqin3._0.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            try
+            {
+                Logger.Info("LOGGED OUT SOMEONE");
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                return RedirectToAction("Index", "Home");
+            }
+
         }
 
         
@@ -149,12 +176,6 @@ namespace pqin3._0.Controllers
                     _userManager.Dispose();
                     _userManager = null;
                 }
-
-                //if (_signInManager != null)
-                //{
-                //    _signInManager.Dispose();
-                //    _signInManager = null;
-                //}
             }
 
             base.Dispose(disposing);
