@@ -15,7 +15,7 @@ namespace pqin3._0
         // Дополнительные сведения о настройке аутентификации см. на странице https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
-            app.CreatePerOwinContext(NastedContext.Create);
+            //app.CreatePerOwinContext(NastedContext.Create);
             //app.CreatePerOwinContext(AuthRepository<User>.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);

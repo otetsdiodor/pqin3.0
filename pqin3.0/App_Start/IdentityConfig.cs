@@ -27,7 +27,6 @@ namespace pqin3._0
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
             IKernel kek = new StandardKernel(new NinjectRegistrations());
-            kek.Get<IUserStore<User>>();
             var manager = new ApplicationUserManager(kek.Get<IUserStore<User>>());
 
             manager.UserValidator = new UserValidator<User>(manager)
