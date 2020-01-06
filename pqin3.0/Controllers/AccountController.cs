@@ -22,7 +22,7 @@ namespace pqin3._0.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager)
         {
             UserManager = userManager;
             //SignInManager = signInManager;

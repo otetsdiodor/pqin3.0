@@ -8,68 +8,17 @@ using System.Web;
 
 namespace pqin3._0.Models
 {
-    //public class UserStore : IUserStore<User>, IUserPasswordStore<User>
-    //{
-    //    NastedContext _context;
-    //    public UserStore()
-    //    { }
-    //    public UserStore(NastedContext context)
-    //    {
-    //        _context = context;
-    //    }
-    //    public Task CreateAsync(User user)
-    //    {
-    //        return Task.Factory.StartNew(() => _context.Add(user));
-    //    }
-
-    //    public Task DeleteAsync(User user)
-    //    {
-    //        return Task.Factory.StartNew(() => _context.Delete(user.GetType(), user.Id));
-    //    }
-
-    //    public void Dispose()
-    //    {
-    //        Console.WriteLine("DISPOSED AHHA");
-    //    }
-
-    //    public Task<User> FindByIdAsync(string userId)
-    //    {
-    //        var kek = (User)_context.GetById(typeof(User), userId);
-    //        return Task.Factory.StartNew(() => kek);
-    //    }
-
-    //    public Task<User> FindByNameAsync(string userName)
-    //    {
-    //        var user = (User)_context.GetByName(typeof(User), userName);
-    //        return Task.Factory.StartNew(() => user);
-    //    }
-
-    //    public Task<string> GetPasswordHashAsync(User user)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public Task<bool> HasPasswordAsync(User user)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public Task SetPasswordHashAsync(User user, string passwordHash)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public Task UpdateAsync(User user)
-    //    {
-    //        return Task.Factory.StartNew(() => _context.Update(user));
-    //    }
-    //}
     public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserLockoutStore<User, string>, IUserTwoFactorStore<User, string>
     {
-        NastedContext _context;
+        //NastedContext _context;
+        IAuthRepo<User> _context;
         public UserStore()
         { }
-        public UserStore(NastedContext context)
+        //public UserStore(NastedContext context)
+        //{
+        //    _context = context;
+        //}
+        public UserStore(IAuthRepo<User> context)
         {
             _context = context;
         }
@@ -81,7 +30,7 @@ namespace pqin3._0.Models
 
         public Task DeleteAsync(User user)
         {
-            return Task.Factory.StartNew(() => _context.Delete(user.GetType(), user.Id));
+            return Task.Factory.StartNew(() => _context.Delete(user.Id));
         }
 
         public void Dispose()
@@ -91,13 +40,13 @@ namespace pqin3._0.Models
 
         public Task<User> FindByIdAsync(string userId)
         {
-            var kek = (User)_context.GetById(typeof(User), userId);
+            var kek = (User)_context.GetById(userId);
             return Task.Factory.StartNew(() => kek);
         }
 
         public Task<User> FindByNameAsync(string userName)
         {
-            var user = (User)_context.GetByName(typeof(User), userName);
+            var user = (User)_context.GetByName(userName);
             return Task.Factory.StartNew(() => user);
         }
 
@@ -118,7 +67,7 @@ namespace pqin3._0.Models
 
         public Task<string> GetPasswordHashAsync(User user)
         {
-            var us = (User)_context.GetById(typeof(User), user.Id);
+            var us = (User)_context.GetById(user.Id);
             return Task.Factory.StartNew(() => us.PasswordHash/*.GetHashCode().ToString()*/);
         }
 
@@ -129,7 +78,7 @@ namespace pqin3._0.Models
 
         public Task<bool> HasPasswordAsync(User user)
         {
-            var us = (User)_context.GetById(typeof(User), user.Id);
+            var us = (User)_context.GetById(user.Id);
             if (us.PasswordHash == null || us.PasswordHash == "")
             {
                 return Task.Factory.StartNew(() => false);
